@@ -1,5 +1,3 @@
-# Day 4 - NestJS Authentication (JWT + Refresh Token)
-
 ## 📅 Progress
 
 Today I implemented a production-style authentication system using **NestJS**, **Prisma**, **PostgreSQL**, and **JWT**.
@@ -99,52 +97,9 @@ Successfully protected authenticated endpoints using:
 
 ---
 
+### 7.1 Role base access controle
+
 ### 8. Authentication Flow
-
-```text
-Login
-   │
-   ▼
-Verify Email & Password
-   │
-   ▼
-Generate Access Token
-Generate Refresh Token
-   │
-   ▼
-Hash Refresh Token
-   │
-   ▼
-Store Refresh Token in Database
-   │
-   ▼
-Return Tokens
-```
-
----
-
-### Refresh Flow
-
-```text
-Client
-   │
-   ▼
-Send Refresh Token
-   │
-   ▼
-Verify JWT
-   │
-   ▼
-Find User
-   │
-   ▼
-Compare Refresh Token
-   │
-   ▼
-Generate New Access Token
-```
-
----
 
 ## 📚 Topics Learned
 
@@ -158,6 +113,7 @@ Generate New Access Token
 - JwtStrategy
 - JwtAuthGuard
 - Protected Routes
+- Role base access controle
 - Authorization Header
 - Refresh Token Validation
 
@@ -175,25 +131,3 @@ Generate New Access Token
 - JSON Web Token (JWT)
 
 ---
-
-## 🚀 Next Goals
-
-- Refresh Token Rotation
-- Logout API
-- CurrentUser Decorator
-- Role-Based Authorization (RBAC)
-- Roles Guard
-- Global Auth Guard
-- Google OAuth Login
-
----
-
-## 💡 Notes
-
-- Never store plain Refresh Tokens.
-- Always hash Refresh Tokens before saving them to the database.
-- Access Tokens should be short-lived.
-- Refresh Tokens should have a longer expiration time.
-- Use `JwtStrategy` to validate JWTs.
-- Use `JwtAuthGuard` to protect private routes.
-- Keep authentication logic separated from business logic for better maintainability.
