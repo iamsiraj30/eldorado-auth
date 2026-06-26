@@ -1,9 +1,3 @@
-## 📅 Progress
-
-Today I implemented a production-style authentication system using **NestJS**, **Prisma**, **PostgreSQL**, and **JWT**.
-
----
-
 ## ✅ Features Implemented
 
 ### 1. User Login
