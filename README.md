@@ -1,100 +1,199 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Day 4 - NestJS Authentication (JWT + Refresh Token)
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## 📅 Progress
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Today I implemented a production-style authentication system using **NestJS**, **Prisma**, **PostgreSQL**, and **JWT**.
 
-## Description
+---
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## ✅ Features Implemented
 
-## Project setup
+### 1. User Login
 
-```bash
-$ npm install
+- Login with email and password
+- Password verification using `bcrypt.compare()`
+- Return authenticated user information
+- Generate JWT tokens after successful login
+
+---
+
+### 2. JWT Authentication
+
+Implemented:
+
+- Access Token
+- Refresh Token
+
+Access Token contains:
+
+- User ID
+- Email
+- Role
+
+---
+
+### 3. Refresh Token Storage
+
+- Generated Refresh Token during login
+- Hashed Refresh Token using `bcrypt`
+- Stored hashed Refresh Token in the database
+- Never stored the raw Refresh Token
+
+---
+
+### 4. Refresh Token API
+
+Implemented refresh token flow:
+
+1. Receive Refresh Token
+2. Verify JWT signature
+3. Find user from database
+4. Compare Refresh Token with hashed value in DB
+5. Generate new Access Token
+6. (Next step) Refresh Token Rotation
+
+---
+
+### 5. JWT Strategy
+
+Implemented Passport JWT Strategy.
+
+Responsibilities:
+
+- Read token from Authorization header
+- Verify JWT
+- Validate payload
+- Attach authenticated user to `request.user`
+
+---
+
+### 6. JWT Auth Guard
+
+Implemented `JwtAuthGuard`.
+
+Responsibilities:
+
+- Protect private routes
+- Allow only authenticated users
+- Use Passport JWT Strategy automatically
+
+Example:
+
+```ts
+@UseGuards(JwtAuthGuard)
+@Get('profile')
+getProfile() {
+  return 'Protected Route';
+}
 ```
 
-## Compile and run the project
+---
 
-```bash
-# development
-$ npm run start
+### 7. Protected Routes
 
-# watch mode
-$ npm run start:dev
+Successfully protected authenticated endpoints using:
 
-# production mode
-$ npm run start:prod
+- Passport
+- JWT Strategy
+- JWT Auth Guard
+
+---
+
+### 8. Authentication Flow
+
+```text
+Login
+   │
+   ▼
+Verify Email & Password
+   │
+   ▼
+Generate Access Token
+Generate Refresh Token
+   │
+   ▼
+Hash Refresh Token
+   │
+   ▼
+Store Refresh Token in Database
+   │
+   ▼
+Return Tokens
 ```
 
-## Run tests
+---
 
-```bash
-# unit tests
-$ npm run test
+### Refresh Flow
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+```text
+Client
+   │
+   ▼
+Send Refresh Token
+   │
+   ▼
+Verify JWT
+   │
+   ▼
+Find User
+   │
+   ▼
+Compare Refresh Token
+   │
+   ▼
+Generate New Access Token
 ```
 
-## Deployment
+---
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+## 📚 Topics Learned
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+- NestJS Authentication
+- JWT Authentication
+- Access Token
+- Refresh Token
+- Password Hashing
+- Refresh Token Hashing
+- Passport JWT
+- JwtStrategy
+- JwtAuthGuard
+- Protected Routes
+- Authorization Header
+- Refresh Token Validation
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
+---
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## 🛠 Tech Stack
 
-## Resources
+- NestJS
+- TypeScript
+- Prisma ORM
+- PostgreSQL
+- Passport.js
+- Passport JWT
+- bcrypt
+- JSON Web Token (JWT)
 
-Check out a few resources that may come in handy when working with NestJS:
+---
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+## 🚀 Next Goals
 
-## Support
+- Refresh Token Rotation
+- Logout API
+- CurrentUser Decorator
+- Role-Based Authorization (RBAC)
+- Roles Guard
+- Global Auth Guard
+- Google OAuth Login
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+---
 
-## Stay in touch
+## 💡 Notes
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
-# eldorado-auth
-# eldorado-auth
+- Never store plain Refresh Tokens.
+- Always hash Refresh Tokens before saving them to the database.
+- Access Tokens should be short-lived.
+- Refresh Tokens should have a longer expiration time.
+- Use `JwtStrategy` to validate JWTs.
+- Use `JwtAuthGuard` to protect private routes.
+- Keep authentication logic separated from business logic for better maintainability.
