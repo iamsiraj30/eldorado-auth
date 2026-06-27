@@ -79,6 +79,7 @@ export class AuthService {
     };
   }
 
+  // verify email
   async verifyEmail(dto: VerifyOtpDto) {
     const { email, otp } = dto;
 
@@ -297,3 +298,9 @@ export class AuthService {
     return accessToken;
   }
 }
+
+/**
+ * @param
+ * @Query
+ * @Request
+ */
