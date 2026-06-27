@@ -12,12 +12,23 @@ enum Role {
 }
 
 model User {
-  id           String   @id @default(uuid())
-  name         String
-  email        String   @unique
-  password     String
-  refreshToken String?
-  role         Role     @default(USER)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id                String             @id @default(uuid())
+  name              String
+  email             String             @unique
+  password          String
+  refreshToken      String?
+  isVerified        Boolean            @default(false)
+  role              Role               @default(USER)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  emailVerification EmailVerification?
+}
+
+model EmailVerification {
+  id        String   @id @default(uuid())
+  otpHash   String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
